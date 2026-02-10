@@ -1,0 +1,16 @@
+name,age,email,gender,income,country,phone,job_title,rating,start_date
+John Smith,28,john.smith@email.com,Male,55000,USA,(555) 123-4567,Senior Developer,4.5,2020-01-15
+jane doe,34,jane.doe@email.com,F,72000,US,5551234568,Data Analyst,3.8,2019/06/01
+Bob Wilson,45,bob.wilson@email.com,m,"$85,000",United States,555-987-6543,Manager,4.2,03/15/2018
+Alice Johnson,,alice@email.com,Female,62000,USA,,designer,4.9,2021-03-20
+  Charlie Brown  ,29,charlie.b@email,Male,-5000,U.S.A.,5559876543,sr. developer,3.5,2020-07-10
+Diana Prince,999,diana@email.com,Female,150000,USA,(555) 456-7890,Project Manager,6.0,"Jan 15, 2017"
+Eve Adams,31,,f,48000,,555.321.6547,marketing specialist,4.1,2022-01-05
+Frank Miller,38,frank.miller@email.com,Male,500000,USA,(555) 789-0123,lead engineer,4.7,2018-11-10
+John Smith,28,john.smith@email.com,Male,55000,USA,(555) 123-4567,Senior Developer,4.5,2020-01-15
+Grace Lee,27,grace.lee@email.com,Female,51000,USA,(555) 234-5678,bi analyst,,2023-02-28
+,42,unknown@email.com,M,95000,USA,(555) 345-6789,regional manager,4.0,2016-09-01
+Hank Pym,35,hank@email.com,Male,,USA,(555) 456-7891,hr specialist,3.9,2019-04-15
+Ivy Chen,26,ivy.chen@email.com,female,"$45,500",USA,5554567892,ux designer,4.3,2022-06-30
+  jane doe ,34,jane.doe@email.com,Female,72000,US,5551234568,data analyst,3.8,2019/06/01
+Karl Urban,50,karl@email.com,Male,110000,USA,(555) 567-8901,Executive,4.6,2015-03-01

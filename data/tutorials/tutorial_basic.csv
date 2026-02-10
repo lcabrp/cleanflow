@@ -1,0 +1,211 @@
+id,name,age,salary,join_date,active
+1,  John Smith  ,25.0,"$50,000",,yes
+2,  John Smith  ,-5.0,100000,01/02/2023,yes
+3,Alice Brown,-5.0,60000,,true
+4,jane doe,25.0,"$75,000",,1
+5,jane doe,30.0,"$75,000","March 5, 2023",false
+6,jane doe,25.0,100000,01/02/2023,no
+7,  John Smith  ,25.0,60000,"March 5, 2023",false
+8,Bob Wilson,,"$75,000",,
+9,  John Smith  ,35.0,60000,01/02/2023,
+10,Bob Wilson,25.0,"$75,000","March 5, 2023",0
+11,,999.0,100000,,yes
+12,  John Smith  ,30.0,,2023-01-01,
+13,  John Smith  ,35.0,"$75,000","March 5, 2023",yes
+14,  John Smith  ,-5.0,"$50,000",01/02/2023,true
+15,jane doe,40.0,"$50,000","March 5, 2023",1
+16,jane doe,30.0,,"March 5, 2023",0
+17,Bob Wilson,999.0,"$75,000","March 5, 2023",0
+18,Bob Wilson,30.0,"$50,000",2023-01-01,0
+19,  John Smith  ,-5.0,"$50,000",01/02/2023,1
+20,Bob Wilson,999.0,"$75,000",01/02/2023,no
+21,jane doe,999.0,60000,01/02/2023,yes
+22,Bob Wilson,40.0,"$75,000",,1
+23,,30.0,60000,01/02/2023,
+24,jane doe,,,01/02/2023,0
+25,,40.0,100000,2023-01-01,yes
+26,Bob Wilson,,,,
+27,Alice Brown,40.0,100000,,yes
+28,  John Smith  ,30.0,"$50,000","March 5, 2023",0
+29,jane doe,25.0,"$50,000",,0
+30,,25.0,"$50,000",,yes
+31,Alice Brown,-5.0,60000,2023-01-01,true
+32,Alice Brown,40.0,100000,01/02/2023,false
+33,jane doe,35.0,"$50,000",,false
+34,jane doe,40.0,"$75,000",,yes
+35,Alice Brown,40.0,100000,2023-01-01,no
+36,  John Smith  ,40.0,100000,,no
+37,  John Smith  ,,60000,,
+38,,-5.0,,2023-01-01,true
+39,  John Smith  ,25.0,60000,"March 5, 2023",1
+40,Alice Brown,-5.0,"$50,000","March 5, 2023",yes
+41,Alice Brown,-5.0,"$75,000",,no
+42,Bob Wilson,-5.0,"$75,000",,yes
+43,Alice Brown,25.0,"$50,000",01/02/2023,true
+44,  John Smith  ,25.0,"$75,000",,
+45,,40.0,60000,01/02/2023,0
+46,Bob Wilson,-5.0,60000,"March 5, 2023",true
+47,  John Smith  ,35.0,"$50,000",,true
+48,,,"$75,000",,
+49,  John Smith  ,,100000,2023-01-01,true
+50,Bob Wilson,25.0,,,no
+51,Alice Brown,30.0,100000,"March 5, 2023",
+52,Bob Wilson,30.0,60000,,true
+53,Alice Brown,30.0,60000,01/02/2023,0
+54,Bob Wilson,999.0,60000,,0
+55,jane doe,40.0,60000,01/02/2023,0
+56,  John Smith  ,30.0,,2023-01-01,1
+57,  John Smith  ,40.0,"$50,000",,
+58,jane doe,30.0,60000,2023-01-01,true
+59,Alice Brown,35.0,"$75,000",2023-01-01,0
+60,  John Smith  ,40.0,,,1
+61,jane doe,30.0,60000,01/02/2023,true
+62,  John Smith  ,,"$75,000",,true
+63,,25.0,60000,01/02/2023,yes
+64,Alice Brown,40.0,"$50,000",2023-01-01,true
+65,,,,"March 5, 2023",false
+66,Alice Brown,,"$50,000",,yes
+67,jane doe,,,"March 5, 2023",
+68,Alice Brown,999.0,60000,01/02/2023,no
+69,Alice Brown,25.0,60000,,false
+70,jane doe,25.0,,"March 5, 2023",no
+71,Alice Brown,-5.0,"$75,000","March 5, 2023",1
+72,  John Smith  ,999.0,"$75,000",,false
+73,Bob Wilson,,60000,"March 5, 2023",yes
+74,jane doe,25.0,60000,,no
+75,Bob Wilson,25.0,"$50,000","March 5, 2023",no
+76,jane doe,,60000,2023-01-01,no
+77,jane doe,,,,true
+78,,30.0,"$75,000",2023-01-01,yes
+79,,30.0,"$75,000",2023-01-01,no
+80,Alice Brown,40.0,"$50,000","March 5, 2023",yes
+81,Bob Wilson,40.0,"$75,000",01/02/2023,0
+82,jane doe,40.0,"$75,000",2023-01-01,0
+83,Alice Brown,30.0,100000,2023-01-01,false
+84,  John Smith  ,,,2023-01-01,true
+85,jane doe,40.0,100000,01/02/2023,0
+86,  John Smith  ,25.0,"$75,000",01/02/2023,1
+87,Alice Brown,30.0,"$50,000",2023-01-01,yes
+88,,40.0,"$50,000",01/02/2023,no
+89,Alice Brown,25.0,"$75,000",01/02/2023,1
+90,  John Smith  ,40.0,60000,01/02/2023,false
+91,jane doe,35.0,100000,,1
+92,Bob Wilson,,"$75,000",2023-01-01,false
+93,Alice Brown,,"$50,000",01/02/2023,
+94,jane doe,40.0,"$50,000",,0
+95,,35.0,100000,"March 5, 2023",yes
+96,,40.0,,"March 5, 2023",false
+97,,-5.0,"$75,000",01/02/2023,no
+98,jane doe,-5.0,"$75,000",2023-01-01,1
+99,Alice Brown,,,01/02/2023,
+100,jane doe,999.0,100000,"March 5, 2023",
+101,jane doe,-5.0,100000,2023-01-01,false
+102,Bob Wilson,-5.0,"$50,000",2023-01-01,true
+103,Bob Wilson,40.0,,"March 5, 2023",false
+104,Alice Brown,30.0,100000,,
+105,Bob Wilson,30.0,60000,,no
+106,,35.0,"$75,000",01/02/2023,0
+107,Bob Wilson,30.0,"$50,000",2023-01-01,yes
+108,,25.0,,01/02/2023,true
+109,Alice Brown,999.0,"$50,000",2023-01-01,no
+110,jane doe,-5.0,100000,"March 5, 2023",false
+111,jane doe,999.0,100000,2023-01-01,no
+112,Bob Wilson,25.0,60000,2023-01-01,1
+113,,-5.0,"$75,000","March 5, 2023",
+114,  John Smith  ,35.0,,,no
+115,  John Smith  ,25.0,"$50,000","March 5, 2023",yes
+116,  John Smith  ,25.0,"$75,000",2023-01-01,yes
+117,jane doe,999.0,100000,"March 5, 2023",no
+118,jane doe,40.0,"$75,000",2023-01-01,
+119,,999.0,"$50,000",,1
+120,Bob Wilson,,"$75,000",,true
+121,  John Smith  ,999.0,100000,2023-01-01,false
+122,,30.0,"$75,000",,
+123,,25.0,,"March 5, 2023",true
+124,Bob Wilson,999.0,"$75,000",,1
+125,,25.0,,01/02/2023,0
+126,Bob Wilson,,"$75,000",,yes
+127,Alice Brown,30.0,100000,01/02/2023,0
+128,Bob Wilson,25.0,60000,"March 5, 2023",false
+129,  John Smith  ,999.0,60000,,1
+130,  John Smith  ,25.0,,,false
+131,Bob Wilson,-5.0,,,0
+132,Alice Brown,,60000,"March 5, 2023",1
+133,Alice Brown,30.0,100000,"March 5, 2023",true
+134,  John Smith  ,40.0,100000,01/02/2023,true
+135,Alice Brown,25.0,"$75,000",2023-01-01,0
+136,,999.0,,"March 5, 2023",0
+137,jane doe,30.0,100000,,yes
+138,,999.0,"$50,000",01/02/2023,true
+139,  John Smith  ,999.0,"$75,000",,yes
+140,Alice Brown,25.0,"$75,000",,0
+141,Bob Wilson,999.0,60000,"March 5, 2023",false
+142,jane doe,25.0,,2023-01-01,1
+143,Bob Wilson,40.0,100000,,true
+144,  John Smith  ,-5.0,100000,"March 5, 2023",1
+145,Alice Brown,999.0,"$75,000",01/02/2023,yes
+146,Bob Wilson,999.0,,,yes
+147,Bob Wilson,999.0,,01/02/2023,no
+148,jane doe,35.0,,"March 5, 2023",false
+149,jane doe,35.0,60000,"March 5, 2023",
+150,Alice Brown,30.0,100000,"March 5, 2023",
+151,jane doe,-5.0,,"March 5, 2023",true
+152,Bob Wilson,-5.0,60000,"March 5, 2023",true
+153,Bob Wilson,35.0,"$50,000",2023-01-01,yes
+154,  John Smith  ,30.0,"$75,000",01/02/2023,
+155,Bob Wilson,35.0,100000,2023-01-01,false
+156,Alice Brown,40.0,100000,01/02/2023,
+157,,30.0,"$75,000",,1
+158,  John Smith  ,-5.0,"$50,000",,true
+159,  John Smith  ,-5.0,60000,01/02/2023,yes
+160,Alice Brown,35.0,"$75,000",,
+161,Alice Brown,40.0,60000,,
+162,jane doe,35.0,60000,,no
+163,  John Smith  ,,60000,2023-01-01,0
+164,jane doe,25.0,"$50,000",2023-01-01,true
+165,Bob Wilson,25.0,"$50,000","March 5, 2023",false
+166,  John Smith  ,40.0,60000,01/02/2023,0
+167,  John Smith  ,999.0,,,1
+168,,999.0,100000,01/02/2023,no
+169,  John Smith  ,25.0,"$50,000","March 5, 2023",true
+170,Bob Wilson,25.0,,"March 5, 2023",0
+171,jane doe,999.0,,,false
+172,jane doe,30.0,100000,"March 5, 2023",
+173,,999.0,60000,,0
+174,Bob Wilson,35.0,,"March 5, 2023",yes
+175,jane doe,30.0,,"March 5, 2023",0
+176,Alice Brown,35.0,,,1
+177,Bob Wilson,25.0,60000,"March 5, 2023",0
+178,Bob Wilson,30.0,60000,"March 5, 2023",1
+179,,35.0,"$50,000","March 5, 2023",1
+180,jane doe,35.0,"$50,000",01/02/2023,false
+181,Bob Wilson,30.0,,2023-01-01,yes
+182,jane doe,40.0,60000,01/02/2023,
+183,Alice Brown,,60000,"March 5, 2023",no
+184,,999.0,100000,2023-01-01,1
+185,Alice Brown,-5.0,,01/02/2023,0
+186,,35.0,"$50,000",01/02/2023,false
+187,Bob Wilson,999.0,100000,01/02/2023,0
+188,,,60000,,1
+189,  John Smith  ,-5.0,"$50,000","March 5, 2023",false
+190,jane doe,999.0,,"March 5, 2023",0
+191,jane doe,25.0,60000,2023-01-01,
+192,  John Smith  ,-5.0,,01/02/2023,
+193,Alice Brown,,100000,"March 5, 2023",true
+194,  John Smith  ,999.0,100000,01/02/2023,yes
+195,Bob Wilson,35.0,100000,"March 5, 2023",0
+196,Bob Wilson,-5.0,"$75,000",01/02/2023,yes
+197,jane doe,25.0,,"March 5, 2023",1
+198,Bob Wilson,30.0,100000,2023-01-01,1
+199,jane doe,35.0,100000,01/02/2023,1
+200,  John Smith  ,25.0,,"March 5, 2023",yes
+1,  John Smith  ,25.0,"$50,000",,yes
+2,  John Smith  ,-5.0,100000,01/02/2023,yes
+3,Alice Brown,-5.0,60000,,true
+4,jane doe,25.0,"$75,000",,1
+5,jane doe,30.0,"$75,000","March 5, 2023",false
+6,jane doe,25.0,100000,01/02/2023,no
+7,  John Smith  ,25.0,60000,"March 5, 2023",false
+8,Bob Wilson,,"$75,000",,
+9,  John Smith  ,35.0,60000,01/02/2023,
+10,Bob Wilson,25.0,"$75,000","March 5, 2023",0
