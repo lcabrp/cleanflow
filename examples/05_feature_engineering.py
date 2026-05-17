@@ -10,7 +10,6 @@ These features correspond to KDNuggets Techniques #5, #7, and #9.
 """
 
 import pandas as pd
-import numpy as np
 from cleanflow import AutomatedCleaner
 
 def main():
@@ -81,7 +80,7 @@ def main():
             print(f"- {ind['indicator']} (for {ind['column']})")
             
     if "feature_scaling" in report:
-        print(f"\nFeature Scaling Applied:")
+        print("\nFeature Scaling Applied:")
         for scale in report["feature_scaling"]:
             # Correct keys: 'column', 'transformation', 'scaling'
             print(f"- {scale['column']} (scaling: {scale['scaling']}, transform: {scale['transformation']})")

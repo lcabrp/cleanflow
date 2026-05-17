@@ -15,8 +15,9 @@ In-depth technical details about the internal architecture and algorithms of the
 7. [Text Cleaning](#text-cleaning)
 8. [Category Standardization](#category-standardization)
 9. [Quality Analysis](#quality-analysis)
-10. [Pipeline Orchestration](#pipeline-orchestration)
-11. [Design Decisions](#design-decisions)
+10. [Profiling and Optimization](#profiling-and-optimization)
+11. [Pipeline Orchestration](#pipeline-orchestration)
+12. [Design Decisions](#design-decisions)
 
 ---
 
@@ -33,6 +34,9 @@ cleanflow/
 ├── text.py              # TextCleaner (6 type-specific pipelines)
 ├── categories.py        # CategoryStandardizer (mapping, grouping, rare handling)
 ├── quality.py           # Standalone quality analysis functions
+├── io.py                # CSV/Parquet loading helpers
+├── profiling.py         # Dataset and column-level profiling
+├── optimization/        # dtype optimization and CSV→Parquet conversion
 ├── pipeline.py          # AutomatedCleaner (orchestrates all transformers)
 └── __init__.py          # Public API exports
 ```
@@ -57,6 +61,29 @@ AutomatedCleaner.clean()
   ↓
 (cleaned_df, report_dict)
 ```
+
+### Optimization Flow
+
+The former `data-optimizer` project is now represented by these modules:
+
+```
+cleanflow/
+├── io.py
+├── profiling.py
+└── optimization/
+    ├── api.py
+    ├── analysis.py
+    ├── utils.py
+    └── backends/
+        ├── pandas_backend.py
+        ├── polars_backend.py
+        ├── dask_backend.py
+        └── duckdb_backend.py
+```
+
+Data loading defaults to pandas because pandas is a core dependency. Optional
+backends are imported only when requested so a basic CleanFlow install remains
+small and reliable.
 
 ---
 
@@ -368,6 +395,52 @@ Adds `{col}_is_missing` binary columns (0/1) for specified columns. Useful when 
 
 ---
 
+## Profiling and Optimization
+
+**Files:** [`io.py`](cleanflow/io.py), [`profiling.py`](cleanflow/profiling.py), [`optimization/`](cleanflow/optimization)
+
+These modules preserve the useful parts of the former `data-optimizer` project inside CleanFlow.
+
+### Loading
+
+`load_dataset()` supports CSV and Parquet. Pandas is the default engine because it is always installed with CleanFlow. Polars is available as an optional backend:
+
+```python
+from cleanflow import load_dataset
+
+df = load_dataset("data.csv")
+pl_df = load_dataset("data.csv", engine="polars")
+```
+
+### Profiling
+
+`profile_dataframe()` returns dataset-level metadata and `dataset_overview()` returns a per-column table. The implementation computes shared statistics in one pass so the profile and overview do not duplicate expensive work.
+
+### Two-Step Dtype Optimization
+
+For auditability, CleanFlow supports analyze → review → apply:
+
+```python
+from cleanflow import analyze_optimization, apply_optimization, optimization_report
+
+recommendations = analyze_optimization(df)
+optimized = apply_optimization(df, recommendations)
+optimization_report(df, optimized, recommendations)
+```
+
+The pandas backend downcasts integer and float columns, converts low-cardinality object columns to `category`, and skips category conversion when optimizing for Parquet because Parquet has native dictionary encoding.
+
+### CSV to Parquet
+
+CleanFlow exposes two conversion paths:
+
+- `convert_to_parquet()` uses DuckDB for fast out-of-core conversion.
+- `convert_to_parquet_optimized()` uses pandas chunking by default, or Polars lazy execution when `engine="polars"` and the optional dependency is present.
+
+This keeps the old data-optimizer performance workflow without making DuckDB, Polars, or PyArrow mandatory for users who only need cleaning.
+
+---
+
 ## Pipeline Orchestration
 
 **File:** [`pipeline.py`](cleanflow/pipeline.py) · **Class:** `AutomatedCleaner`
@@ -458,8 +531,8 @@ The ordering is intentional:
 
 ### 5. Pandas-Native
 
-CleanFlow operates on standard `pd.DataFrame` objects with no custom wrappers. This ensures compatibility with the entire pandas ecosystem and downstream tools like data_optimizer.
+CleanFlow operates on standard `pd.DataFrame` objects with no custom wrappers. This keeps the library compatible with notebooks, pandas-based analytics code, scikit-learn workflows, and common serialization formats such as CSV and Parquet.
 
 ---
 
-**Last Updated:** February 9, 2026
+**Last Updated:** May 17, 2026

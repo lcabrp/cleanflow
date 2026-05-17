@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-17
+
+Merged the useful ideas from the former `data-optimizer` project into CleanFlow.
+
+### Added
+- File loading helpers: `load_dataset()` and `estimate_csv_memory()`.
+- Profiling helpers: `profile_dataframe()` and `dataset_overview()`.
+- Memory optimization helpers: `optimize_dataset()`, `analyze_optimization()`, `apply_optimization()`, and `optimization_report()`.
+- Optional backend support for Polars, Dask, DuckDB, and PyArrow/Parquet.
+- CLI entry points: `cleanflow-optimize` and `cleanflow-profile`.
+- Compatibility helpers from data-optimizer: `drop_na()` and `fill_na()`.
+- Tests for the merged optimization/profile/load workflow.
+
+### Changed
+- CleanFlow is now positioned as a data cleaning, quality, profiling, and optimization library.
+- Packaging metadata now consistently targets Python 3.9+.
+- Optional heavy dependencies moved behind extras instead of being required for basic cleaning.
+- Documentation now includes problem framing, practical use cases, and current CleanFlow-only optimization workflows.
+- `dataset_overview()` now includes explicit column names, missing percentages, and unique counts for easier audits.
+
 ## [0.2.0] - 2026-02-09
 
 Complete refactoring into modular, composable transformers with a unified pipeline.

@@ -2,7 +2,6 @@
 
 import pandas as pd
 import numpy as np
-import pytest
 from cleanflow.features import NumericalTransformer, FeatureScaler, DateFeatureExtractor, MissingIndicator, FeatureSelector
 
 # ---------------------------------------------------------------------------

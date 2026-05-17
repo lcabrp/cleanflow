@@ -13,7 +13,6 @@ Concepts covered:
 
 import pandas as pd
 import numpy as np
-import cleanflow as cf
 from cleanflow import AutomatedCleaner
 
 def generate_complex_data(n_samples=1000):

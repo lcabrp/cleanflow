@@ -1,7 +1,6 @@
 """Tests for CleanFlow v2 — all transformers and pipeline."""
 
 import pandas as pd
-import numpy as np
 import pytest
 
 from cleanflow import (

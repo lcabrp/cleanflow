@@ -7,9 +7,8 @@ Inspired by automate_5_steps.py and KDNuggets technique #9.
 """
 
 import pandas as pd
-import numpy as np
 import logging
-from typing import Dict, List, Optional, Any
+from typing import List, Optional
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

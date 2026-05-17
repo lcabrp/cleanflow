@@ -56,6 +56,7 @@ def main():
     print(f"Completeness: {initial_q['completeness_percentage']}% -> {final_q['completeness_percentage']}%")
     print(f"Missing Values: {initial_q['total_missing_values']} -> {final_q['total_missing_values']}")
     print(f"Duplicate Rows: {initial_q['duplicate_rows']} -> {final_q['duplicate_rows']}")
+    print(f"Data Loss: {validation['data_loss_pct']}%")
     
     # 5. Review transformations
     # We can inspect specific changes made by transformers

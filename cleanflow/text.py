@@ -10,8 +10,8 @@ import pandas as pd
 import numpy as np
 import re
 import unicodedata
-from typing import Dict, List, Optional, Callable
-from dataclasses import dataclass, field
+from typing import Dict, List
+from dataclasses import dataclass
 
 from .base import BaseTransformer
 

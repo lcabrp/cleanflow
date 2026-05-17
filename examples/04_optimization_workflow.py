@@ -2,34 +2,22 @@
 CleanFlow Example 04: Optimization Workflow
 -------------------------------------------
 This script demonstrates the complete data pipeline: 
-Loading -> Cleaning (CleanFlow) -> Optimizing (DataOptimizer) -> Saving (Parquet)
+Loading -> Cleaning -> Optimizing -> Saving (Parquet)
 
-It shows how to combine CleanFlow with the complementary library 'data_optimizer'
-for maximum efficiency.
+The optimizer features from the former data-optimizer project now live inside
+CleanFlow, so this example uses one package end to end.
 
 Prerequisites:
-    # If data_optimizer is in a sibling folder (e.g. ../data_optimizer):
-    pip install -e ../data_optimizer
-    pip install pyarrow  # for Parquet support
+    pip install -e ".[parquet]"
 
 Target Audience: Data Engineers building production pipelines
 """
 
-import pandas as pd
-from cleanflow import AutomatedCleaner
-try:
-    from data_optimizer import load_dataset, optimize_dataset, convert_to_parquet_optimized
-except ImportError:
-    print("This tutorial requires the 'data_optimizer' library.")
-    print("Install from sibling folder: pip install -e ../data_optimizer")
-    print("Also install Parquet support: pip install pyarrow")
-    exit()
+from cleanflow import AutomatedCleaner, load_dataset, optimize_dataset
 
 def main():
     # 1. Efficient Loading
-    # Use data_optimizer to load the data (supports Polars backend for speed)
-    # Falling back to pandas if Polars is not available
-    print("Loading data via data_optimizer...")
+    print("Loading data via CleanFlow...")
     try:
         # Generate some larger data if needed, but for tutorial we use the basic set
         input_file = "data/tutorials/tutorial_basic.csv"
@@ -68,7 +56,6 @@ def main():
     output_file = "data/tutorials/tutorial_cleaned.parquet"
     print(f"\nSaving to {output_file}...")
     
-    # Simple pandas save (data_optimizer also has advanced saving tools)
     optimized_df.to_parquet(output_file, compression="zstd")
     
     print("Done! Workflow complete.")

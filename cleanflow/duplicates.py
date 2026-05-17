@@ -8,8 +8,8 @@ KDNuggets technique #2 (smart dedup keeping the most complete record).
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Literal, Any
-from dataclasses import dataclass, field
+from typing import List, Optional, Literal
+from dataclasses import dataclass
 from difflib import SequenceMatcher
 
 from .base import BaseTransformer

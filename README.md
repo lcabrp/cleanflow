@@ -1,8 +1,8 @@
 # CleanFlow
 
-Modular Python library for automated data cleaning. Implements 10 essential data cleaning techniques as composable transformers that follow a consistent **analyze → transform → report** pattern.
+Modular Python library for automated data cleaning, quality analysis, profiling, memory optimization, and CSV-to-Parquet workflows. CleanFlow now combines the cleaning pipeline from this repo with the best loading/profiling/optimization ideas from the former `data-optimizer` project.
 
-**Version:** 0.2.0 · **Python:** ≥3.9 · **License:** MIT
+**Version:** 0.3.0 · **Python:** ≥3.9 · **License:** MIT
 
 ---
 
@@ -18,6 +18,30 @@ Modular Python library for automated data cleaning. Implements 10 essential data
 | **CategoryStandardizer** | Value mapping, category grouping, rare category handling, case normalization |
 | **Feature Engineering** | Scaling (Standard, MinMax, Robust), Date Extraction (Year, Month, etc.), Missing Indicators |
 | **Quality Tools** | `check_quality()`, `quality_score()`, `detect_suspicious()`, `add_missing_indicators()` |
+| **Profiling & IO** | `load_dataset()`, `profile_dataframe()`, `dataset_overview()`, CSV/Parquet support |
+| **Optimization** | `optimize_dataset()`, two-step dtype optimization, pandas/Polars/Dask backends, CSV→Parquet conversion |
+
+---
+
+## What CleanFlow Solves
+
+CleanFlow is for projects where raw tabular data is useful but not yet safe to trust. It gives you a repeatable way to inspect, clean, document, and optimize pandas-style datasets before they reach dashboards, notebooks, machine learning models, or downstream storage.
+
+Common problems it can fix or expose:
+
+| Problem | CleanFlow support |
+|---|---|
+| Dirty types | Converts currency strings, percentages, dates, booleans, and numeric-looking text |
+| Missing values | Profiles missingness, imputes by strategy, drops high-missing columns, or adds missing indicators |
+| Duplicate records | Finds exact duplicates and fuzzy text duplicates, then applies survivorship rules |
+| Extreme values | Detects and caps, removes, flags, or imputes outliers |
+| Messy text | Normalizes names, emails, phones, addresses, descriptions, and codes |
+| Category drift | Maps inconsistent labels, groups related categories, and folds rare values into `Other` |
+| Unknown data quality | Produces before/after quality reports and row-level quality scores |
+| Large CSV friction | Loads, profiles, downcasts, and converts CSV files to Parquet |
+| Reviewability | Returns structured reports so future readers can see what changed and why |
+
+CleanFlow is intentionally best for tabular datasets where rule-based cleaning is acceptable and reviewable. It is not a replacement for domain validation, database constraints, human data stewardship, or model-specific feature engineering decisions.
 
 ---
 
@@ -31,29 +55,47 @@ pip install -e .
 uv sync
 ```
 
-**Dependencies:** pandas ≥1.5, numpy ≥1.21, scikit-learn ≥1.0
+**Core dependencies:** pandas ≥1.5, numpy ≥1.21, scikit-learn ≥1.0, scipy ≥1.10
+
+Optional extras:
+
+```bash
+pip install "cleanflow[parquet]"  # PyArrow Parquet conversion
+pip install "cleanflow[duckdb]"   # Out-of-core CSV -> Parquet
+pip install "cleanflow[polars]"   # Faster optional loading/optimization backend
+pip install "cleanflow[all]"      # All optional backends
+```
 
 ---
 
 ## Real-World Scenarios
 
-CleanFlow is designed for:
+CleanFlow is useful in both small scripts and larger data workflows:
 
-**1. Automated Data Ingestion**
-   - **Scenario**: Use in an Airflow DAG or cron job to clean daily CSV dumps from valid sources.
-   - **Benefit**: Ensures downstream dashboards (Tableau/PowerBI) never break due to bad data.
+| Scenario | Why CleanFlow fits |
+|---|---|
+| Notebook exploration | Run `check_quality()` and `profile_dataframe()` before spending time on analysis |
+| One-off CSV cleanup | Use `AutomatedCleaner` to standardize types, handle missing values, and export a cleaner file |
+| Dashboard refreshes | Apply the same cleaning pipeline every day so Power BI, Tableau, or Streamlit inputs stay stable |
+| ML preprocessing | Fit imputation/scaling/feature steps on training data and apply them consistently |
+| Legacy spreadsheet migration | Normalize manual entries before loading records into a database or warehouse |
+| Data handoff review | Share the cleaning report with reviewers so they can see data loss, duplicates, and conversions |
+| Large file optimization | Downcast memory-heavy columns or convert CSV to Parquet before repeated analysis |
 
-**2. Machine Learning Preprocessing**
-   - **Scenario**: Preparing raw data for Scikit-Learn or XGBoost.
-   - **Benefit**: Handles everything ML models hate: NaNs, outliers, skewness, and non-numeric dates.
+For more concrete project patterns, see [docs/USE_CASES.md](docs/USE_CASES.md).
 
-**3. Dataset Auditing**
-   - **Scenario**: Evaluating a 3rd-party dataset before purchase.
-   - **Benefit**: `check_quality()` reveals missingness, duplicates, and inconsistencies in seconds.
+---
 
-**4. Legacy Data Migration**
-   - **Scenario**: Standardizing old Excel files with messy manual entries ("USA", "U.S.", "United States").
-   - **Benefit**: `CategoryStandardizer` and `TextCleaner` normalize inconsistencies automatically.
+## Choosing the Right Entry Point
+
+| Need | Start with |
+|---|---|
+| "I just received a messy CSV" | `load_dataset()` → `AutomatedCleaner()` → `optimize_dataset()` |
+| "I only need to know if this data is safe" | `check_quality()`, `profile_dataframe()`, `dataset_overview()` |
+| "I want a controlled, reviewable dtype change" | `analyze_optimization()` → review → `apply_optimization()` |
+| "I know the exact cleaning rules" | Individual transformers such as `TextCleaner`, `DuplicateHandler`, `OutlierHandler` |
+| "I need a reusable pipeline" | Configure `AutomatedCleaner` once and keep the returned report |
+| "The CSV is large and slow" | `convert_to_parquet_optimized()` or `convert_to_parquet()` |
 
 ---
 
@@ -61,17 +103,65 @@ CleanFlow is designed for:
 ## Quick Start
 
 ```python
-from cleanflow import AutomatedCleaner
-import pandas as pd
+from cleanflow import AutomatedCleaner, load_dataset, optimize_dataset
 
-df = pd.read_csv("data/messy_data.csv")
+df = load_dataset("data/messy_data.csv")  # pandas by default
 cleaner = AutomatedCleaner()
 cleaned_df, report = cleaner.clean(df)
+optimized_df = optimize_dataset(cleaned_df)
 
 print(f"Completeness: {report['initial_quality']['completeness_percentage']}% → "
       f"{report['final_quality']['completeness_percentage']}%")
 print(f"Data loss: {report['validation']['data_loss_pct']}%")
 ```
+
+For a tiny project, this may be enough. For a production or portfolio project, keep the `report` next to your output dataset so reviewers can understand which rows, columns, and values changed.
+
+### Profile and Optimize Only
+
+Use these when your data is already clean enough and you just want the old `data-optimizer` workflow inside CleanFlow:
+
+```python
+from cleanflow import load_dataset, profile_dataframe, analyze_optimization, apply_optimization
+
+df = load_dataset("large_data.csv")
+profile = profile_dataframe(df)
+print(profile["rows"], profile["memory_mb"])
+
+recommendations = analyze_optimization(df)
+df_optimized = apply_optimization(df, recommendations)
+```
+
+### Convert CSV to Parquet
+
+```python
+from cleanflow import convert_to_parquet_optimized
+
+convert_to_parquet_optimized(
+    "large_data.csv",
+    "large_data.parquet",
+    compression="zstd",
+    engine="pandas",
+)
+```
+
+For large files and fastest out-of-core conversion, install DuckDB and use:
+
+```python
+from cleanflow import convert_to_parquet
+
+convert_to_parquet("large_data.csv", "large_data.parquet")
+```
+
+### CLI
+
+```bash
+cleanflow-profile data.csv
+cleanflow-optimize data.csv
+cleanflow-optimize data.csv --to-parquet data.parquet --optimize --compression zstd
+```
+
+The former `data-optimize` and `data-profile` ideas now live here as `cleanflow-optimize` and `cleanflow-profile`.
 
 ---
 
@@ -306,105 +396,86 @@ cleaner = AutomatedCleaner(
 
 ---
 
-## Using with data_optimizer
+## Practical Workflows
 
-CleanFlow and [data_optimizer](../data_optimizer) are complementary libraries:
+### Clean, Optimize, Save
 
-| Library | Focus |
-|---|---|
-| **data_optimizer** | Loading, memory optimization, profiling, Parquet conversion |
-| **cleanflow** | Data quality — fixing types, missing values, duplicates, outliers, text |
-
-### Installing data_optimizer
-
-If the `data_optimizer` project is in a sibling folder (e.g. `../data_optimizer`), install it in editable mode:
-
-```bash
-# From the cleanflow project root
-pip install -e ../data_optimizer
-
-# Or with uv
-uv pip install -e ../data_optimizer
-```
-
-You may also want to install optional backends for best performance:
-
-```bash
-pip install pyarrow fastparquet
-```
-
-### Combined Workflow
+Use this when the source data is messy but still small enough to load into memory.
 
 ```python
-from data_optimizer import load_dataset, optimize_dataset, convert_to_parquet_optimized
-from cleanflow import AutomatedCleaner, CategoryStandardizer
+from cleanflow import AutomatedCleaner, load_dataset, optimize_dataset
 
-# 1. LOAD — efficient loading via data_optimizer
-df = load_dataset("data/sales_data.csv", engine="pandas")
+df = load_dataset("data/sales_data.csv")
 
-# 2. CLEAN — fix data quality with cleanflow
 cleaner = AutomatedCleaner(
     duplicate_subset=["Product_ID"],
     outlier_columns=["Price", "Quantity_Sold"],
     outlier_strategy="cap",
 )
 cleaned_df, report = cleaner.clean(df)
-
-print(f"Missing: {report['validation']['missing_before']} → {report['validation']['missing_after']}")
-print(f"Rows: {report['validation']['rows_before']} → {report['validation']['rows_after']}")
-
-# 3. OPTIMIZE — reduce memory usage via data_optimizer
 optimized_df = optimize_dataset(cleaned_df)
 
-# 4. SAVE — compressed Parquet via data_optimizer
 optimized_df.to_parquet("data/sales_cleaned.parquet", compression="zstd")
+
+print(f"Rows: {report['validation']['rows_before']} -> {report['validation']['rows_after']}")
+print(f"Missing: {report['validation']['missing_before']} -> {report['validation']['missing_after']}")
 ```
 
-### Two-Step Optimization + Cleaning
+### Audit Before Cleaning
+
+Use this when you need to explain data quality before making changes.
 
 ```python
-from data_optimizer import load_dataset, analyze_optimization, apply_optimization, optimization_report
-from cleanflow import AutomatedCleaner, check_quality
+from cleanflow import check_quality, dataset_overview, load_dataset, profile_dataframe
 
-# Load
 df = load_dataset("data/users_02.csv")
 
-# Check quality before cleaning
-print("Before:", check_quality(df)["completeness_percentage"], "% complete")
+quality = check_quality(df)
+profile = profile_dataframe(df)
+overview = dataset_overview(df)
 
-# Clean
-cleaner = AutomatedCleaner()
-cleaned_df, _ = cleaner.clean(df)
-
-# Analyze optimization opportunities
-recommendations = analyze_optimization(cleaned_df, verbose=True)
-optimized_df = apply_optimization(cleaned_df, recommendations)
-before_mb, after_mb, reduction = optimization_report(cleaned_df, optimized_df, recommendations)
-
-print(f"Memory: {before_mb:.1f} MB → {after_mb:.1f} MB ({reduction:.1f}% reduction)")
+print(f"Completeness: {quality['completeness_percentage']}%")
+print(f"Memory: {profile['memory_mb']} MB")
+print(overview[["column", "dtype", "missing_pct", "unique_count"]])
 ```
 
-### Batch Processing Pipeline
+### Reviewable Optimization
+
+Use this when dtype changes need to be visible before they are applied.
+
+```python
+from cleanflow import analyze_optimization, apply_optimization, optimization_report
+
+recommendations = analyze_optimization(df, verbose=True)
+optimized_df = apply_optimization(df, recommendations)
+
+before_mb, after_mb, reduction = optimization_report(df, optimized_df, recommendations)
+print(f"Memory reduction: {reduction:.1f}%")
+```
+
+### Batch Processing
+
+Use this when several recurring CSV files need the same treatment.
 
 ```python
 from pathlib import Path
-from data_optimizer import load_dataset, optimize_dataset
-from cleanflow import AutomatedCleaner
+from cleanflow import AutomatedCleaner, load_dataset, optimize_dataset
 
-data_dir = Path("data")
 cleaner = AutomatedCleaner(outlier_strategy="cap")
 
-for csv_file in data_dir.glob("*.csv"):
-    df = load_dataset(str(csv_file))
+for csv_file in Path("data/raw").glob("*.csv"):
+    df = load_dataset(csv_file)
     cleaned_df, report = cleaner.clean(df)
     optimized_df = optimize_dataset(cleaned_df)
 
-    output = csv_file.with_suffix(".parquet")
-    optimized_df.to_parquet(str(output), compression="zstd")
+    output = Path("data/clean") / csv_file.with_suffix(".parquet").name
+    optimized_df.to_parquet(output, compression="zstd")
 
-    print(f"{csv_file.name}: {report['validation']['rows_before']} rows, "
-          f"{report['initial_quality']['completeness_percentage']}% → "
-          f"{report['final_quality']['completeness_percentage']}% complete")
+    print(
+        f"{csv_file.name}: "
+        f"{report['initial_quality']['completeness_percentage']}% -> "
+        f"{report['final_quality']['completeness_percentage']}% complete"
+    )
 ```
 
 ---
@@ -422,9 +493,24 @@ cleanflow/
 │   ├── text.py              # TextCleaner (6 pipelines)
 │   ├── categories.py        # CategoryStandardizer
 │   ├── quality.py           # Quality analysis utilities
+│   ├── io.py                # CSV/Parquet loading helpers
+│   ├── profiling.py         # Dataset profiling helpers
+│   ├── optimization/        # Memory optimization and Parquet conversion
+│   ├── cli.py               # cleanflow-profile and cleanflow-optimize entry points
 │   └── pipeline.py          # AutomatedCleaner orchestrator
+├── docs/
+│   └── USE_CASES.md         # Practical scenario guide
+├── examples/
+│   ├── 01_basic_cleaning.py
+│   ├── 02_custom_configuration.py
+│   ├── 03_quality_analysis.py
+│   ├── 04_optimization_workflow.py
+│   ├── 05_feature_engineering.py
+│   └── 06_advanced_features.py
 ├── tests/
-│   └── test_cleaning.py     # Comprehensive test suite
+│   ├── test_cleaning.py
+│   ├── test_features.py
+│   └── test_optimization.py
 ├── data/                    # Sample datasets
 │   ├── messy_data.csv
 │   ├── messy_data_02.csv

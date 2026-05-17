@@ -7,9 +7,7 @@ numerical transformations, enhanced date extraction, and feature selection.
 import pandas as pd
 import numpy as np
 from scipy import stats
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-import warnings
 
 from .base import FitTransformer
 
@@ -99,7 +97,10 @@ class NumericalTransformer(FitTransformer):
                 best_method = 'log'
                 best_params = {'shift': shift}
                 best_data = log_data
-        except: pass
+        except Exception:
+            # Some transforms are only valid for certain distributions; keep
+            # trying the remaining candidates instead of failing the pipeline.
+            pass
 
         # Try Box-Cox (requires positive)
         try:
@@ -115,7 +116,10 @@ class NumericalTransformer(FitTransformer):
                     best_method = 'boxcox'
                     best_params = {'lambda': lmbda, 'shift': shift}
                     best_data = bc_series
-        except: pass
+        except Exception:
+            # Box-Cox is intentionally opportunistic here because bad inputs
+            # should fall through to Yeo-Johnson or the original data.
+            pass
 
         # Try Yeo-Johnson (works on negatives)
         try:
@@ -127,7 +131,9 @@ class NumericalTransformer(FitTransformer):
                 best_method = 'yeojohnson'
                 best_params = {'lambda': lmbda}
                 best_data = yj_series
-        except: pass
+        except Exception:
+            # Yeo-Johnson is a best-effort normalization candidate.
+            pass
         
         return best_method, best_params, best_data
 
