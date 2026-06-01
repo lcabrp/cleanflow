@@ -33,7 +33,15 @@ def optimize(
         dtype = series.dtype
 
         if pd.api.types.is_integer_dtype(dtype):
-            out[column] = pd.to_numeric(series, downcast="integer")
+            min_value = series.min()
+            max_value = series.max()
+            has_na = series.isnull().any()
+            # If min_value or max_value are null (empty column), leave as is or use Int64
+            if pd.isna(min_value) or pd.isna(max_value):
+                rec = "Int64"
+            else:
+                rec = smallest_int_dtype(int(min_value), int(max_value), nullable=has_na)
+            out[column] = series.astype(rec)
         elif pd.api.types.is_float_dtype(dtype) and downcast_float:
             if (not require_float_notnull) or series.notnull().all():
                 out[column] = pd.to_numeric(series, downcast="float")

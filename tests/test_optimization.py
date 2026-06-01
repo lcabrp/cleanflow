@@ -24,7 +24,7 @@ def test_pandas_optimization_reduces_memory():
 
     optimized = optimize_dataset(df)
 
-    assert str(optimized["small_int"].dtype) in {"int8", "int16", "int32"}
+    assert str(optimized["small_int"].dtype) in {"uint8", "int8", "int16", "int32"}
     assert str(optimized["small_float"].dtype) == "float32"
     assert str(optimized["category_like"].dtype) == "category"
 
