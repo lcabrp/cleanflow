@@ -6,10 +6,57 @@ numerical transformations, enhanced date extraction, and feature selection.
 """
 import pandas as pd
 import numpy as np
-from scipy import stats
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 
 from .base import FitTransformer
+
+
+class _ColumnScaler:
+    """Small one-column scaler matching the sklearn defaults CleanFlow used."""
+
+    def __init__(self, method):
+        self.method = method
+        self.center_ = 0.0
+        self.scale_ = 1.0
+        self.min_ = 0.0
+
+    def fit(self, data):
+        values = pd.Series(data, dtype="float64").dropna()
+        if values.empty:
+            return self
+
+        if self.method == "standard":
+            self.center_ = float(values.mean())
+            scale = float(values.std(ddof=0))
+            self.scale_ = scale if scale != 0 else 1.0
+        elif self.method == "minmax":
+            self.min_ = float(values.min())
+            max_value = float(values.max())
+            scale = max_value - self.min_
+            self.scale_ = scale if scale != 0 else 1.0
+        elif self.method == "robust":
+            self.center_ = float(values.median())
+            q1 = float(values.quantile(0.25))
+            q3 = float(values.quantile(0.75))
+            scale = q3 - q1
+            self.scale_ = scale if scale != 0 else 1.0
+        return self
+
+    def transform(self, data):
+        values = np.asarray(data, dtype="float64")
+        if self.method == "minmax":
+            return (values - self.min_) / self.scale_
+        return (values - self.center_) / self.scale_
+
+
+def _scipy_stats():
+    try:
+        from scipy import stats
+    except ImportError as exc:
+        raise ImportError(
+            "SciPy is required for auto numeric transformations. "
+            "Install with: pip install 'cleanflow[features]'"
+        ) from exc
+    return stats
 
 class NumericalTransformer(FitTransformer):
     """
@@ -61,19 +108,11 @@ class NumericalTransformer(FitTransformer):
 
             # 2. Fit Scaler
             if self.scaling_method:
-                if self.scaling_method == "standard":
-                    scaler = StandardScaler()
-                elif self.scaling_method == "minmax":
-                    scaler = MinMaxScaler()
-                elif self.scaling_method == "robust":
-                    scaler = RobustScaler()
-                else:
-                    scaler = None
+                scaler = _ColumnScaler(self.scaling_method) if self.scaling_method in {"standard", "minmax", "robust"} else None
                 
                 if scaler:
-                    # reshapes for sklearn
                     if len(transformed_data) > 0:
-                        scaler.fit(transformed_data.values.reshape(-1, 1))
+                        scaler.fit(transformed_data)
                         self.scalers_[col] = scaler
 
         return self
@@ -104,6 +143,7 @@ class NumericalTransformer(FitTransformer):
 
         # Try Box-Cox (requires positive)
         try:
+            stats = _scipy_stats()
             min_val = data.min()
             shift = abs(min_val) + 1 if min_val <= 0 else 0
             # Only try if strictly positive after shift
@@ -123,6 +163,7 @@ class NumericalTransformer(FitTransformer):
 
         # Try Yeo-Johnson (works on negatives)
         try:
+            stats = _scipy_stats()
             yj_data, lmbda = stats.yeojohnson(data)
             yj_series = pd.Series(yj_data, index=data.index)
             score = self._evaluate_normality(yj_series)
@@ -158,8 +199,10 @@ class NumericalTransformer(FitTransformer):
             if method == 'log':
                 vals = np.log(vals + params.get('shift', 0))
             elif method == 'boxcox':
+                stats = _scipy_stats()
                 vals = stats.boxcox(vals + params.get('shift', 0), lmbda=params['lambda'])
             elif method == 'yeojohnson':
+                stats = _scipy_stats()
                 vals = stats.yeojohnson(vals, lmbda=params['lambda'])
             
             # Ensure column is float if we are putting floats in it
@@ -172,7 +215,7 @@ class NumericalTransformer(FitTransformer):
             # 2. Apply Scaling
             if col in self.scalers_:
                 scaler = self.scalers_[col]
-                scaled_vals = scaler.transform(X.loc[mask, col].values.reshape(-1, 1)).flatten()
+                scaled_vals = scaler.transform(X.loc[mask, col])
                 X.loc[mask, col] = scaled_vals
                 
         return X

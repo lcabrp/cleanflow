@@ -1,10 +1,10 @@
 # CleanFlow Data Cleaning Library — Copilot Instructions
 
-This repo is a **modular Python library** for automated data cleaning. Primary focus: composable transformers following sklearn-style **analyze → transform → report** pattern with 10+ essential data cleaning techniques.
+This repo is a **modular Python library** for automated data cleaning. Primary focus: composable transformers following an **analyze → transform → report** pattern with 10+ essential data cleaning techniques.
 
 **Package Name:** cleanflow  
 **Purpose:** Reusable data cleaning transformers for pandas DataFrames  
-**Tech Stack:** Python 3.14+, pandas 3.0+, scikit-learn, scipy, numpy  
+**Tech Stack:** Python 3.14+, pandas 3.0+, numpy; optional SciPy via `cleanflow[features]` for Box-Cox/Yeo-Johnson transforms  
 **Pattern:** Base classes (BaseTransformer, FitTransformer) for consistency
 
 ---
@@ -61,7 +61,7 @@ class MyTransformer(BaseTransformer):
 
 **Used by:** DataStandardizer, DuplicateHandler, OutlierHandler, TextCleaner, CategoryStandardizer
 
-**2. FitTransformer (Stateful - sklearn-style)**
+**2. FitTransformer (Stateful)**
 ```python
 from cleanflow.base import FitTransformer
 
@@ -466,11 +466,11 @@ def clean_daily_data():
 ### 2. ML Preprocessing Pipeline
 
 ```python
-from sklearn.model_selection import train_test_split
 from cleanflow import MissingValueHandler, OutlierHandler
 
 # Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y)
+split_at = int(len(X) * 0.8)
+X_train, X_test = X.iloc[:split_at], X.iloc[split_at:]
 
 # Fit on training data only
 missing_handler = MissingValueHandler()
@@ -713,6 +713,5 @@ report = handler.get_report()  # Has data
 ## References
 
 - **pandas Documentation:** https://pandas.pydata.org/docs/
-- **scikit-learn Transformers:** https://scikit-learn.org/stable/modules/preprocessing.html
 - **Data Quality:** ISO 8000 standards
 - **Text Normalization:** Unicode consortium

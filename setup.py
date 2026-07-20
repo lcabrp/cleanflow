@@ -8,16 +8,15 @@ setup(
     install_requires=[
         "pandas>=1.5.0",
         "numpy>=1.21.0",
-        "scikit-learn>=1.0.0",
-        "scipy>=1.10.0",
     ],
     extras_require={
+        "features": ["scipy>=1.10.0"],
         "parquet": ["pyarrow>=10"],
         "duckdb": ["duckdb>=0.10"],
         "polars": ["polars>=0.20"],
         "dask": ["dask[dataframe]>=2023.1"],
-        "all": ["pyarrow>=10", "duckdb>=0.10", "polars>=0.20", "dask[dataframe]>=2023.1"],
-        "dev": ["pytest>=7", "ruff>=0.4"],
+        "all": ["scipy>=1.10.0", "pyarrow>=10", "duckdb>=0.10", "polars>=0.20", "dask[dataframe]>=2023.1"],
+        "dev": ["pytest>=7", "ruff>=0.4", "scipy>=1.10.0"],
     },
     entry_points={
         "console_scripts": [

@@ -107,7 +107,7 @@ class BaseTransformer(ABC):
 
 ### FitTransformer
 
-For transformers that learn parameters before transforming (sklearn-style).
+For transformers that learn parameters before transforming.
 
 ```python
 class FitTransformer(BaseTransformer):
@@ -564,8 +564,19 @@ The ordering is intentional:
 
 ### 5. Pandas-Native
 
-CleanFlow operates on standard `pd.DataFrame` objects with no custom wrappers. This keeps the library compatible with notebooks, pandas-based analytics code, scikit-learn workflows, and common serialization formats such as CSV and Parquet.
+CleanFlow operates on standard `pd.DataFrame` objects with no custom wrappers. This keeps the library compatible with notebooks, pandas-based analytics code, optional ML workflows, and common serialization formats such as CSV and Parquet.
+
+### 6. Lightweight Core Dependencies
+
+CleanFlow's core install is limited to `pandas` and `numpy`. This keeps package import and sibling-project usage lightweight, especially for benchmark and optimization workflows that only need `cleanflow.io` and `cleanflow.apply_optimization()`.
+
+Feature scaling in `NumericalTransformer` is implemented with local pandas/numpy math:
+- **Standard scaling** — `(x - mean) / population_std`
+- **Min-max scaling** — `(x - min) / (max - min)`
+- **Robust scaling** — `(x - median) / IQR`
+
+The implementation intentionally matches the sklearn defaults CleanFlow previously used for these one-column transforms, without requiring sklearn as a runtime dependency. Advanced distribution transforms remain SciPy-backed because reimplementing Box-Cox and Yeo-Johnson would add risk without meaningful value. SciPy is therefore optional via `cleanflow[features]` and is imported lazily only when those transforms are requested.
 
 ---
 
-**Last Updated:** May 17, 2026
+**Last Updated:** July 19, 2026

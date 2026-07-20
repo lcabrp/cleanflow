@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-07-19
+
+### Changed
+- Removed `scikit-learn` from core dependencies. `NumericalTransformer` now uses a small pandas/numpy scaler for standard, min-max, and robust scaling.
+- Moved SciPy-backed numeric distribution transforms behind the optional `features` extra. `auto_transform_numerics=True` still supports Box-Cox and Yeo-Johnson when SciPy is installed.
+- Kept the default import path lightweight for sibling consumers such as `data-proc-benchmark`, which currently uses CleanFlow for data loading and dtype optimization rather than feature engineering.
+- Updated installation documentation to describe core dependencies (`pandas`, `numpy`) separately from optional feature and performance extras.
+
+### Verified
+- `uv run --extra dev pytest` passes all 56 tests.
+- Plain `import cleanflow` no longer imports `sklearn` or `scipy`.
+
 ## [0.3.0] - 2026-05-17
 
 Merged the useful ideas from the former `data-optimizer` project into CleanFlow.

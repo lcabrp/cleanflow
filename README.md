@@ -47,7 +47,10 @@ CleanFlow is intentionally best for tabular datasets where rule-based cleaning i
 
 ## 📦 Installation & Developer Setup
 
-CleanFlow's core package is extremely lightweight and only requires standard scientific computing libraries (`pandas`, `numpy`, `scikit-learn`, `scipy`). 
+CleanFlow's core package is intentionally lightweight and only requires `pandas` and `numpy`.
+Advanced numeric distribution transforms use SciPy as an optional feature extra.
+
+The core dependency boundary is intentional: sibling projects that only need CleanFlow's file loading, caching, and dtype optimization paths should not have to install machine-learning libraries.
 
 For medium-to-large datasets (1M to 100M+ records), we **highly recommend** installing the optional high-performance backends. These enable features like C++ PyArrow parsing, zero-copy database memory mappings, and fast columnar pipelines.
 
@@ -65,6 +68,7 @@ To unlock the maximum speed and memory efficiency of CleanFlow, install the extr
 
 ```bash
 # Install specific high-performance engines
+pip install "cleanflow[features]" # Enables SciPy-backed Box-Cox/Yeo-Johnson transforms
 pip install "cleanflow[parquet]"  # Enables PyArrow engine (highly recommended)
 pip install "cleanflow[duckdb]"   # Enables out-of-core DuckDB engine
 pip install "cleanflow[polars]"   # Enables Polars engine
@@ -409,6 +413,7 @@ flagged_df = add_missing_indicators(df, columns=["age", "income"])
 ## Advanced Feature Engineering
 
 CleanFlow goes beyond cleaning to prepare data for machine learning, incorporating modern techniques.
+Basic scaling uses pandas/numpy directly. Install `cleanflow[features]` when using `auto_transform=True` or `auto_transform_numerics=True`, because Box-Cox and Yeo-Johnson transforms require SciPy.
 
 ```python
 from cleanflow import NumericalTransformer, DateFeatureExtractor, FeatureSelector, MissingIndicator
